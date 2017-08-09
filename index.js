@@ -29,7 +29,6 @@ const Q = require("bluebird-q")
 const openssl = require("openssl-wrapper").exec
 const tmp = require('tmp');
 
-
 const fs = require("fs")
 const assert = require("assert")
 
@@ -49,6 +48,32 @@ const include = keypath => self => {
 }
 
 /**
+ *  This will make a temporary file.
+ *  When the command has finished, the 
+ *  contents of the temporary file 
+ *  will be read into memory at this variable
+ */
+const outclude = (keypath, document_encoding) => self => {
+    const t = tmp.fileSync();
+
+    _.d.set(self, keypath, t.name)
+
+    self._outclusiond[keypath] = {
+        name: t.name,
+        document_encoding: document_encoding,
+    }
+
+    return t.name;
+}
+
+/**
+ *  Note:
+ *  open ssl likes to deal with files on the file system, so a simple
+ *  in/out model is not sufficient.
+ *
+ *  - inclusions: this will convert a document in memory into a temporary file
+ *  - outclusions: this will create a temporary file. after the command
+ *    has run, that file will be read into memory
  */
 const _build = (name, command, post) => {
     command = command || name;
@@ -57,6 +82,8 @@ const _build = (name, command, post) => {
     return Q.denodeify(
         (_self, done) => {
             const self = _.d.clone.shallow(_self)
+            self._outclusiond = [];
+
             const in_key = `${name}_in`
             const out_key = `${name}_out`
 
@@ -71,7 +98,6 @@ const _build = (name, command, post) => {
                     return o;
                 }
             }
-
 
             const options = _inclusions(self[in_key])
 
@@ -92,6 +118,12 @@ const _build = (name, command, post) => {
                 self.document = out;
                 post(self)
 
+                // outclusions
+                _.mapObject(self._outclusiond, (outclusion, keypath) => {
+                    _.d.set(self, keypath, fs.readFileSync(outclusion.name, outclusion.document_encoding))
+                })
+                delete self._outclusiond;
+
                 done(null, self)
             })
         }
@@ -102,6 +134,9 @@ const _build = (name, command, post) => {
  *  API
  */
 exports.x509 = _build("x509")
+exports.req = _build("req")
 exports.dgst = _build("dgst")
 exports.dgst.verify = _build("dgst", null, self => { self.verified = self.document.toString() === "Verified OK\n" ? true : false }) 
+
 exports.include = include;
+exports.outclude = outclude;
