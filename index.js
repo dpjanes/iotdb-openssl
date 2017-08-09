@@ -135,6 +135,7 @@ const _build = (name, command, post) => {
  */
 exports.x509 = _build("x509")
 exports.req = _build("req")
+exports.genrsa = _build("genrsa")
 exports.dgst = _build("dgst")
 exports.dgst.verify = _build("dgst", null, self => { self.verified = self.document.toString() === "Verified OK\n" ? true : false }) 
 
