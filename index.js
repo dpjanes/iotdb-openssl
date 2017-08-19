@@ -36,13 +36,17 @@ const assert = require("assert")
  *  This will look up data in self and write
  *  it to a file. The filename is returned
  */
-const include = keypath => self => {
+const include = (keypath, document_encoding) => self => {
     const buffer = _.d.first(self, keypath)
-    assert.ok(_.is.Buffer(buffer))
+    assert.ok(_.is.Buffer(buffer) || _.is.String(buffer))
 
     const t = tmp.fileSync();
 
-    fs.writeFileSync(t.name, buffer)
+    if (_.is.String(buffer)) {
+        fs.writeFileSync(t.name, buffer, document_encoding || "utf-8")
+    } else {
+        fs.writeFileSync(t.name, buffer)
+    }
 
     return t.name;
 }
@@ -137,6 +141,7 @@ exports.x509 = _build("x509")
 exports.req = _build("req")
 exports.genrsa = _build("genrsa")
 exports.dgst = _build("dgst")
+exports.ca = _build("ca")
 exports.dgst.verify = _build("dgst", null, self => { self.verified = self.document.toString() === "Verified OK\n" ? true : false }) 
 
 exports.include = include;
