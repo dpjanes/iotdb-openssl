@@ -139,6 +139,7 @@ const _build = (name, command, post) => {
  */
 exports.x509 = _build("x509")
 exports.req = _build("req")
+exports.rsa = _build("rsa")
 exports.genrsa = _build("genrsa")
 exports.dgst = _build("dgst")
 exports.ca = _build("ca")
