@@ -24,7 +24,6 @@
 
 const _ = require("iotdb-helpers")
 
-const bluebird = require("bluebird")
 const Q = require("bluebird-q")
 const openssl = require("openssl-wrapper").exec
 const tmp = require('tmp');

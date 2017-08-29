@@ -4,9 +4,10 @@
         "url": "https://github.com/dpjanes/iotdb-openssl/issues"
     }, 
     "dependencies": {
-        "iotdb-fs": "~1.0.2", 
-        "iotdb-helpers": "~3.0.37", 
-        "openssl-wrapper": "~0.3.4"
+        "iotdb-fs": "~1.0.5", 
+        "iotdb-helpers": "~3.1.1", 
+        "openssl-wrapper": "~0.3.4", 
+        "tmp": "~0.0.33"
     }, 
     "description": "IOTDB Module", 
     "devDependencies": {
