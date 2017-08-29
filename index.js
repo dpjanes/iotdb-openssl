@@ -51,6 +51,25 @@ const include = (keypath, document_encoding) => self => {
 }
 
 /**
+ *  Similar to include, but will return a variable
+ *  with file: in front
+ */
+const passclude = (keypath, document_encoding) => self => {
+    const buffer = _.d.first(self, keypath)
+    assert.ok(_.is.Buffer(buffer) || _.is.String(buffer))
+
+    const t = tmp.fileSync();
+
+    if (_.is.String(buffer)) {
+        fs.writeFileSync(t.name, buffer, document_encoding || "utf-8")
+    } else {
+        fs.writeFileSync(t.name, buffer)
+    }
+
+    return `file:${t.name}`;
+}
+
+/**
  *  This will make a temporary file.
  *  When the command has finished, the 
  *  contents of the temporary file 
@@ -133,6 +152,20 @@ const _build = (name, command, post) => {
     )
 }
 
+const _p = name => {
+    return ind => {
+        return Q.denodeify((_self, done) => {
+            const self = _.d.clone.shallow(_self)
+
+            Q(self)
+                .then(sd => _.d.add(sd, `${name}_in`, ind))
+                .then(exports[name])
+                .then(sd => done(null, sd))
+                .catch(done)
+        })
+    }
+}
+
 /**
  *  API
  */
@@ -144,5 +177,13 @@ exports.dgst = _build("dgst")
 exports.ca = _build("ca")
 exports.dgst.verify = _build("dgst", null, self => { self.verified = self.document.toString() === "Verified OK\n" ? true : false }) 
 
+exports.x509.p = _p("x509")
+exports.req.p = _p("req")
+exports.rsa.p = _p("rsa")
+exports.genrsa.p = _p("genrsa")
+exports.dgst.p = _p("dgst")
+exports.ca.p = _p("ca")
+
 exports.include = include;
+exports.passclude = passclude;
 exports.outclude = outclude;
