@@ -11,11 +11,10 @@
  */
 
 const _ = require("iotdb-helpers")
-const Q = require("bluebird-q")
 
 const openssl = require("iotdb-openssl")
 
-Q({
+_.promise.make({
     x509_in: {
         in: "key.crt",
         issuer: true,

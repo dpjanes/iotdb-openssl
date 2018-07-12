@@ -8,13 +8,12 @@
 
 const _ = require("iotdb-helpers")
 const fs = require("iotdb-fs")
-const Q = require("bluebird-q")
 
 const openssl = require("iotdb-openssl")
 
 // openssl genrsa -aes256 -out private/ca.key.pem 4096
 
-Q({
+_.promise.make({
     password: "david",
     genrsa_in: {
         "aes256": true,

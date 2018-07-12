@@ -6,7 +6,6 @@
 #   2017-08-07
 #
 
-exit 0
 PACKAGE=iotdb-openssl
 DIST_ROOT=/var/tmp/.dist.$$
 

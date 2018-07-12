@@ -24,7 +24,6 @@
 
 const _ = require("iotdb-helpers")
 
-const Q = require("bluebird-q")
 const openssl = require("openssl-wrapper").exec
 const tmp = require('tmp');
 
@@ -101,7 +100,7 @@ const _build = (name, command, post) => {
     command = command || name;
     post = post || (s => s);
 
-    return Q.denodeify(
+    return _.promise.denodeify(
         (_self, done) => {
             const self = _.d.clone.shallow(_self)
             self._outclusiond = [];
@@ -154,10 +153,10 @@ const _build = (name, command, post) => {
 
 const _p = name => {
     return ind => {
-        return Q.denodeify((_self, done) => {
+        return _.promise.denodeify((_self, done) => {
             const self = _.d.clone.shallow(_self)
 
-            Q(self)
+            _.promise.make(self)
                 .then(sd => _.d.add(sd, `${name}_in`, ind))
                 .then(exports[name])
                 .then(sd => done(null, sd))

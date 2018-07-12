@@ -14,10 +14,9 @@ const _ = require("iotdb-helpers")
 
 const fs = require("iotdb-fs")
 
-const Q = require("bluebird-q")
 const x509 = require("x509");
 
-Q({
+_.promise.make({
     path: "key.crt",
 })
     .then(fs.read.utf8)
