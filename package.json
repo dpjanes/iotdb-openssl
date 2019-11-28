@@ -4,23 +4,11 @@
         "url": "https://github.com/dpjanes/iotdb-openssl/issues"
     }, 
     "dependencies": {
-        "iotdb-fs": "~1.1.2", 
-        "iotdb-helpers": "~3.4.2", 
+        "iotdb-helpers": "~3.4.3", 
         "openssl-wrapper": "~0.3.4", 
         "tmp": "~0.1.0"
     }, 
     "description": "Run OpenSSL commands from Node.JS", 
-    "devDependencies": {
-        "grunt": "~1.0.4", 
-        "grunt-contrib-jshint": "~1.1.0", 
-        "grunt-contrib-nodeunit": "~1.0.0", 
-        "grunt-contrib-uglify": "~3.3.0", 
-        "grunt-contrib-watch": "~1.1.0", 
-        "grunt-jsbeautifier": "~0.2.13", 
-        "jshint-stylish": "~2.2.1", 
-        "load-grunt-tasks": "~3.5.2", 
-        "request": "~2.88.0"
-    }, 
     "homepage": "https://github.com/dpjanes", 
     "license": "Apache-2.0", 
     "main": "index.js", 
