@@ -62,4 +62,20 @@ describe("issuer", function() {
             })
             .end(done)
     })
+    it("issuer.issuer", function(done) {
+        _.promise.make({
+            x509_in: {
+                in: path.join(__dirname, "data", "key.crt"),
+                issuer: true,
+            },
+        })
+            .then(openssl.x509.issuer)
+            .then(sd => {
+                const got = sd.issuer
+                const want = "/C=CA/ST=Ontario/L=Toronto/O=Consensas/OU=IT/CN=David"
+
+                assert.deepEqual(got, want)
+            })
+            .end(done)
+    })
 })

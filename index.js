@@ -100,56 +100,53 @@ const _build = (name, command, post) => {
     command = command || name;
     post = post || (s => s);
 
-    return _.promise(
-        (_self, done) => {
-            const self = _.d.clone.shallow(_self)
-            self._outclusiond = [];
+    return _.promise((self, done) => {
+        self._outclusiond = [];
 
-            const in_key = `${name}_in`
-            const out_key = `${name}_out`
+        const in_key = `${name}_in`
+        const out_key = `${name}_out`
 
-            const _inclusions = o => {
-                if (_.is.Array(o)) {
-                    return o.map(_inclusions);
-                } else if (_.is.Function(o)) {
-                    return o(self)
-                } else if (_.is.Object(o)) {
-                    return _.mapObject(o, (value, key) => _inclusions(value))
-                } else {
-                    return o;
-                }
-            }
-
-            const options = _inclusions(self[in_key])
-
-            // trailing parameters come in with "_"
-            if (_.is.Nullish(options._)) {
-            } else if (_.is.Array(options._)) {
-                options._.forEach(last => options[last] = false)
+        const _inclusions = o => {
+            if (_.is.Array(o)) {
+                return o.map(_inclusions);
+            } else if (_.is.Function(o)) {
+                return o(self)
+            } else if (_.is.Object(o)) {
+                return _.mapObject(o, (value, key) => _inclusions(value))
             } else {
-                options[options._] = false;
+                return o;
             }
-            delete options._;
+        }
+
+        const options = _inclusions(self[in_key])
+
+        // trailing parameters come in with "_"
+        if (_.is.Nullish(options._)) {
+        } else if (_.is.Array(options._)) {
+            options._.forEach(last => options[last] = false)
+        } else {
+            options[options._] = false;
+        }
+        delete options._;
 
 // console.log("COMMAND", command, options)
-            openssl(command, options, (error, out) => {
-                if (error) { 
-                    return done(error)
-                }
+        openssl(command, options, (error, out) => {
+            if (error) { 
+                return done(error)
+            }
 
-                self.document = out;
-                post(self)
+            self.document = out;
+            post(self)
 
-                // outclusions
-                _.mapObject(self._outclusiond, (outclusion, keypath) => {
-                    _.d.set(self, keypath, fs.readFileSync(outclusion.name, outclusion.document_encoding))
-                })
-                delete self._outclusiond;
-
-                done(null, self)
+            // outclusions
+            _.mapObject(self._outclusiond, (outclusion, keypath) => {
+                _.d.set(self, keypath, fs.readFileSync(outclusion.name, outclusion.document_encoding))
             })
-        }
-    )
+            delete self._outclusiond;
+
+            done(null, self)
+        })
+    })
 }
 
 const _p = name => ind => _.promise((self, done) => {
@@ -163,6 +160,9 @@ const _p = name => ind => _.promise((self, done) => {
  *  API
  */
 exports.x509 = _build("x509")
+exports.x509.issuer = _build("x509", null, self => {
+    self.issuer = self.document.toString("utf-8").split("\n")[0].replace(/issuer= /, "")
+})
 exports.req = _build("req")
 exports.rsa = _build("rsa")
 exports.genrsa = _build("genrsa")
