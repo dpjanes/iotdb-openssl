@@ -100,7 +100,7 @@ const _build = (name, command, post) => {
     command = command || name;
     post = post || (s => s);
 
-    return _.promise.denodeify(
+    return _.promise(
         (_self, done) => {
             const self = _.d.clone.shallow(_self)
             self._outclusiond = [];
@@ -131,6 +131,7 @@ const _build = (name, command, post) => {
             }
             delete options._;
 
+// console.log("COMMAND", command, options)
             openssl(command, options, (error, out) => {
                 if (error) { 
                     return done(error)
@@ -151,19 +152,12 @@ const _build = (name, command, post) => {
     )
 }
 
-const _p = name => {
-    return ind => {
-        return _.promise.denodeify((_self, done) => {
-            const self = _.d.clone.shallow(_self)
-
-            _.promise.make(self)
-                .then(sd => _.d.add(sd, `${name}_in`, ind))
-                .then(exports[name])
-                .then(sd => done(null, sd))
-                .catch(done)
-        })
-    }
-}
+const _p = name => ind => _.promise((self, done) => {
+    _.promise(self)
+        .add(`${name}_in`, ind)
+        .then(exports[name])
+        .end(done)
+})
 
 /**
  *  API
