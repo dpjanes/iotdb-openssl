@@ -33,7 +33,7 @@ const _util = require("./_util")
 
 describe("issuer", function() {
     it("works", function(done) {
-        _.promise.make({
+        _.promise({
             x509_in: {
                 in: path.join(__dirname, "data", "key.crt"),
                 issuer: true,
@@ -49,7 +49,7 @@ describe("issuer", function() {
             .end(done)
     })
     it("paramaterized", function(done) {
-        _.promise.make()
+        _.promise()
             .then(openssl.x509.p({
                 in: path.join(__dirname, "data", "key.crt"),
                 issuer: true,
@@ -63,7 +63,7 @@ describe("issuer", function() {
             .end(done)
     })
     it("issuer.issuer", function(done) {
-        _.promise.make({
+        _.promise({
             x509_in: {
                 in: path.join(__dirname, "data", "key.crt"),
                 issuer: true,
