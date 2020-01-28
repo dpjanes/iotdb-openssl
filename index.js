@@ -153,7 +153,12 @@ const _p = name => ind => _.promise((self, done) => {
     _.promise(self)
         .add(`${name}_in`, ind)
         .then(exports[name])
-        .end(done)
+        .make(sd => {
+            _.mapObject(self, (value, key) => {
+                self[key] = value
+            })
+        })
+        .end(done, self)
 })
 
 /**
