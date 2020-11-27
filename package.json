@@ -4,9 +4,9 @@
         "url": "https://github.com/dpjanes/iotdb-openssl/issues"
     }, 
     "dependencies": {
-        "iotdb-helpers": "~3.4.11", 
+        "iotdb-helpers": "~3.5.1", 
         "openssl-wrapper": "~0.3.4", 
-        "tmp": "~0.1.0"
+        "tmp": "~0.2.1"
     }, 
     "description": "Run OpenSSL commands from Node.JS", 
     "homepage": "https://github.com/dpjanes", 
